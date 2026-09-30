@@ -1,0 +1,8 @@
+services:
+  db:
+    image: mysql:9.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=telefood
+      - MYSQL_DATABASE=telefood
+    ports:
+      - "3308:3306"
