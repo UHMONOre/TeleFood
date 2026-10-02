@@ -10,18 +10,23 @@ public class Order {
     private Integer id;
 
     @Column(nullable = false)
-    private boolean isCompleted = false;
+    private boolean completed = false;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_Id", nullable = false)
+    private Vendor vendor;
 
     public Order() {}
 
-    public Order(Integer id, boolean isCompleted, User user) {
+    public Order(Integer id, boolean completed, Customer customer, Vendor vendor) {
         this.id = id;
-        this.isCompleted = isCompleted;
-        this.user = user;
+        this.completed = completed;
+        this.customer = customer;
+        this.vendor = vendor;
     }
 
     public Integer getId() {
@@ -32,19 +37,27 @@ public class Order {
         this.id = id;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public boolean getCompleted() {
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        isCompleted = completed;
+        this.completed = completed;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 }

@@ -17,7 +17,7 @@ public class Customer extends User{
     @Column(nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     List<Order> orderHistory = new ArrayList<>();
 
     protected Customer() {
