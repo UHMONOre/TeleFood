@@ -9,6 +9,10 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "vendor_id", nullable = false)
+    private Vendor vendor;
+
     @Column(nullable = false)
     private String name;
 

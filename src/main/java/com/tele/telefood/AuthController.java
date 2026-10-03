@@ -25,13 +25,24 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/register/customer")
+    public ResponseEntity<String> registerCustomer(@RequestBody RegisterRequestCustomer registerRequest) {
 
         try {
-            Integer userId = userService.processRegister(loginRequest);
-            return ResponseEntity.ok("{\"userId\": " + userId + " is successfully registered}");
+            Integer customerId = userService.processRegister(registerRequest);
+            return ResponseEntity.ok("{\"userId\": " + customerId + " is successfully registered}");
         } catch (Exception e) {
+            return ResponseEntity.status(401).body("User already exists");
+        }
+    }
+
+    @PostMapping("/register/vendor")
+    public ResponseEntity<String> registerVendor(@RequestBody RegisterRequestVendor registerRequest) {
+
+        try {
+            Integer vendorId = userService.processRegister(registerRequest);
+            return ResponseEntity.ok("{\"userId\": " + vendorId + " is successfully registered}");
+        } catch (Exception e){
             return ResponseEntity.status(401).body("User already exists");
         }
     }

@@ -12,6 +12,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private VendorRepository vendorRepository;
+
     @Transactional
     public Integer processLogin(@RequestBody LoginRequest loginRequest) throws Exception {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new Exception("User not found"));
@@ -29,14 +35,24 @@ public class UserService {
     }
 
     @Transactional
-    public Integer processRegister(@RequestBody LoginRequest loginRequest) throws Exception {
-        if (userRepository.findByEmail(loginRequest.getEmail()).isPresent()) {
+    public Integer processRegister(@RequestBody RegisterRequestCustomer registerRequestCustomer) throws Exception {
+        if (userRepository.findByEmail(registerRequestCustomer.getEmail()).isPresent()) {
             throw new Exception("User already exists");
         }
 
-        User user = new User(loginRequest.getEmail(), loginRequest.getPassword(), loginRequest.getFirstName(), loginRequest.getLastName());
-        userRepository.save(user);
+        Customer customer = new Customer(registerRequestCustomer);
+        customerRepository.save(customer);
+        return customer.getId();
+    }
 
-        return user.getId();
+    @Transactional
+    public Integer processRegister(@RequestBody RegisterRequestVendor registerRequestVendor) throws Exception {
+        if (userRepository.findByEmail(registerRequestVendor.getEmail()).isPresent()) {
+            throw new Exception("User already exists");
+        }
+
+        Vendor vendor = new Vendor(registerRequestVendor);
+        vendorRepository.save(vendor);
+        return vendor.getId();
     }
 }
