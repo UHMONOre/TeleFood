@@ -37,7 +37,7 @@ public class UserService {
     @Transactional
     public Integer processRegister(@RequestBody RegisterRequestCustomer registerRequestCustomer) throws Exception {
         if (userRepository.findByEmail(registerRequestCustomer.getEmail()).isPresent()) {
-            throw new Exception("User already exists");
+            throw new IllegalArgumentException("User already exists");
         }
 
         Customer customer = new Customer(registerRequestCustomer);
@@ -48,7 +48,9 @@ public class UserService {
     @Transactional
     public Integer processRegister(@RequestBody RegisterRequestVendor registerRequestVendor) throws Exception {
         if (userRepository.findByEmail(registerRequestVendor.getEmail()).isPresent()) {
-            throw new Exception("User already exists");
+            throw new IllegalArgumentException("User already exists");
+        }else if (vendorRepository.findByTin(registerRequestVendor.getTin()).isPresent()){
+            throw new IllegalArgumentException("Vendor already exists");
         }
 
         Vendor vendor = new Vendor(registerRequestVendor);

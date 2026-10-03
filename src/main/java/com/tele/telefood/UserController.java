@@ -1,5 +1,6 @@
 package com.tele.telefood;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,15 +25,18 @@ public class UserController {
     }
 
     @PostMapping("/delete/{userid}")
-    public void deleteUser(@RequestHeader("UserId") Integer userId,  @PathVariable("userid") Integer deletedUserId) {
+    public ResponseEntity<String> deleteUser(@RequestHeader("UserId") Integer userId, @PathVariable("userid") Integer deletedUserId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (user.getId().equals(deletedUserId)) {
             userRepository.delete(user);
-        }else if(user.getId() == 1 || user.getAdminFlag()){
+            return ResponseEntity.ok("Your account has been successfully deleted.");
+        }else if(user.getId().equals(1) || user.getAdminFlag()){
             User deletedUser = userRepository.findById(deletedUserId).orElseThrow(() -> new IllegalArgumentException("Invalid Id"));
 
             userRepository.delete(deletedUser);
+
+            return ResponseEntity.ok("Admin successfully deleted user with ID: " + deletedUserId);
         }else {
             throw new IllegalArgumentException("invalid authorization");
         }

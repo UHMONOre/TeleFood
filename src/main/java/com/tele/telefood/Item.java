@@ -1,5 +1,6 @@
 package com.tele.telefood;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "vendor_id", nullable = false)
+    @JsonIgnore
     private Vendor vendor;
 
     @Column(nullable = false)

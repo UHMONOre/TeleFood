@@ -31,8 +31,10 @@ public class AuthController {
         try {
             Integer customerId = userService.processRegister(registerRequest);
             return ResponseEntity.ok("{\"userId\": " + customerId + " is successfully registered}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(401).body("User already exists");
+            return ResponseEntity.status(500).body("Invalid entry");
         }
     }
 
@@ -42,8 +44,10 @@ public class AuthController {
         try {
             Integer vendorId = userService.processRegister(registerRequest);
             return ResponseEntity.ok("{\"userId\": " + vendorId + " is successfully registered}");
-        } catch (Exception e){
-            return ResponseEntity.status(401).body("User already exists");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(401).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Invalid entry");
         }
     }
 }

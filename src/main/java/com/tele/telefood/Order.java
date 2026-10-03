@@ -1,5 +1,6 @@
 package com.tele.telefood;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,10 +15,12 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "vendor_Id", nullable = false)
+    @JsonIgnore
     private Vendor vendor;
 
     public Order() {}

@@ -20,7 +20,7 @@ public class Vendor extends User{
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -30,6 +30,8 @@ public class Vendor extends User{
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
+
+    public Vendor() {}
 
     public Vendor(String email, String password, String firstName, String lastName) {
         super(email, password, firstName, lastName);
