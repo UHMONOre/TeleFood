@@ -1,5 +1,14 @@
-package com.tele.telefood;
+package com.tele.telefood.service;
 
+import com.tele.telefood.dto.LoginRequest;
+import com.tele.telefood.dto.RegisterRequestCustomer;
+import com.tele.telefood.dto.RegisterRequestVendor;
+import com.tele.telefood.entity.Customer;
+import com.tele.telefood.entity.User;
+import com.tele.telefood.entity.Vendor;
+import com.tele.telefood.repository.CustomerRepository;
+import com.tele.telefood.repository.UserRepository;
+import com.tele.telefood.repository.VendorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

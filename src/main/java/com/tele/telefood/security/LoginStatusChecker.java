@@ -1,5 +1,7 @@
-package com.tele.telefood;
+package com.tele.telefood.security;
 
+import com.tele.telefood.entity.User;
+import com.tele.telefood.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

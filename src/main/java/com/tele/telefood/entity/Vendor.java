@@ -1,5 +1,6 @@
-package com.tele.telefood;
+package com.tele.telefood.entity;
 
+import com.tele.telefood.dto.RegisterRequestVendor;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "vendor")
-public class Vendor extends User{
+public class Vendor extends User {
     @Column(nullable = false, unique = true)
     private Long tin;
 

@@ -1,5 +1,7 @@
-package com.tele.telefood;
+package com.tele.telefood.security;
 
+import com.tele.telefood.entity.User;
+import com.tele.telefood.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

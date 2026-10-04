@@ -1,4 +1,4 @@
-package com.tele.telefood;
+package com.tele.telefood.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

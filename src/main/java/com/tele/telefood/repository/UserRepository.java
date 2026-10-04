@@ -1,5 +1,6 @@
-package com.tele.telefood;
+package com.tele.telefood.repository;
 
+import com.tele.telefood.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

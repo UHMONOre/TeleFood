@@ -1,4 +1,4 @@
-package com.tele.telefood;
+package com.tele.telefood.dto;
 
 public class LoginRequest {
     private String email;

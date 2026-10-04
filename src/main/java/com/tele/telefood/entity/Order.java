@@ -1,4 +1,4 @@
-package com.tele.telefood;
+package com.tele.telefood.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -6,12 +6,22 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "orders")
 public class Order {
+
+    public enum OrderStatus {
+        Pending,
+        Preparing,
+        Delivering,
+        Completed,
+        Failed
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean completed = false;
+    private OrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -25,9 +35,9 @@ public class Order {
 
     public Order() {}
 
-    public Order(Integer id, boolean completed, Customer customer, Vendor vendor) {
+    public Order(Integer id, OrderStatus status, Customer customer, Vendor vendor) {
         this.id = id;
-        this.completed = completed;
+        this.status = status;
         this.customer = customer;
         this.vendor = vendor;
     }
@@ -40,12 +50,12 @@ public class Order {
         this.id = id;
     }
 
-    public boolean getCompleted() {
-        return completed;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     public Customer getCustomer() {

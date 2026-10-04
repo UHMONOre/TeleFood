@@ -1,5 +1,9 @@
-package com.tele.telefood;
+package com.tele.telefood.controller;
 
+import com.tele.telefood.dto.LoginRequest;
+import com.tele.telefood.dto.RegisterRequestCustomer;
+import com.tele.telefood.dto.RegisterRequestVendor;
+import com.tele.telefood.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

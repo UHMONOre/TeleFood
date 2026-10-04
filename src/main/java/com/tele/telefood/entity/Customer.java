@@ -1,5 +1,6 @@
-package com.tele.telefood;
+package com.tele.telefood.entity;
 
+import com.tele.telefood.dto.RegisterRequestCustomer;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "customer")
-public class Customer extends User{
+public class Customer extends User {
     @Column(nullable = false)
     private String country;
 

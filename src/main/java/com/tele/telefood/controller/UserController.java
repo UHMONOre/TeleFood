@@ -1,5 +1,7 @@
-package com.tele.telefood;
+package com.tele.telefood.controller;
 
+import com.tele.telefood.entity.User;
+import com.tele.telefood.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
