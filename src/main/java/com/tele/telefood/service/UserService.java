@@ -66,4 +66,35 @@ public class UserService {
         vendorRepository.save(vendor);
         return vendor.getId();
     }
+
+    @Transactional
+    public void updateName(Integer id, String firstName, String lastName) {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateEmail(Integer id, String email) {
+
+        User user  = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setEmail(email);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updatePassword(Integer id, String password) {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setPassword(password);
+
+        userRepository.save(user);
+    }
 }
