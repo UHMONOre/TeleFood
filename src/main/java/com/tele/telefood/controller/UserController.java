@@ -56,7 +56,7 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Server error occurred");
+            return ResponseEntity.status(500).body("Server error occurred.");
         }
     }
 
@@ -69,7 +69,7 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Server error occurred");
+            return ResponseEntity.status(500).body("Server error occurred.");
         }
     }
 
@@ -82,7 +82,7 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Server error occurred");
+            return ResponseEntity.status(500).body("Server error occurred.");
         }
     }
 }
