@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface VendorRepository extends JpaRepository<Vendor, Integer> {
     Optional<Vendor> findByTin(Long tin);
+
+    Optional<Vendor> findById(Integer id);
 }
