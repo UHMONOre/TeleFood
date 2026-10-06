@@ -10,6 +10,7 @@ public class RegisterRequestVendor {
     private String city;
     private String address;
     private String name;
+    private String phoneNumber;
 
     public String getEmail() {
         return email;
@@ -45,5 +46,9 @@ public class RegisterRequestVendor {
 
     public String getName() {
         return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }

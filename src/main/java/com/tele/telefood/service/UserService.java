@@ -3,6 +3,7 @@ package com.tele.telefood.service;
 import com.tele.telefood.dto.LoginRequest;
 import com.tele.telefood.dto.RegisterRequestCustomer;
 import com.tele.telefood.dto.RegisterRequestVendor;
+import com.tele.telefood.dto.UpdateLocationRequest;
 import com.tele.telefood.entity.Customer;
 import com.tele.telefood.entity.User;
 import com.tele.telefood.entity.Vendor;
@@ -94,6 +95,48 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         user.setPassword(password);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateCountry(Integer id, UpdateLocationRequest request) {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setCountry(request.getCountry());
+        user.setCity(request.getCity());
+        user.setAddress(request.getAddress());
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateCity(Integer id, UpdateLocationRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setCity(request.getCity());
+        user.setAddress(request.getAddress());
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateAddress(Integer id, UpdateLocationRequest request) {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setAddress(request.getAddress());
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updatePhone(Integer id, String phoneNumber) {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+
+        user.setPhoneNumber(phoneNumber);
 
         userRepository.save(user);
     }

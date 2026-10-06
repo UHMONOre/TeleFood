@@ -38,6 +38,7 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Invalid entry");
         }
     }
@@ -51,6 +52,7 @@ public class AuthController {
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(401).body(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Invalid entry");
         }
     }

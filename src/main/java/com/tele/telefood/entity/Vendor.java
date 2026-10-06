@@ -13,15 +13,6 @@ public class Vendor extends User {
     private Long tin;
 
     @Column(nullable = false)
-    private String country;
-
-    @Column(nullable = false)
-    private String city;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -34,29 +25,20 @@ public class Vendor extends User {
 
     public Vendor() {}
 
-    public Vendor(String email, String password, String firstName, String lastName) {
-        super(email, password, firstName, lastName);
+    public Vendor(String email, String password, String firstName, String lastName, String country, String city, String address, String phoneNumber) {
+        super(email, password, firstName, lastName, country, city, address, phoneNumber);
     }
 
-    public Vendor(String email, String password, String firstName, String lastName, Long tin, String country, String city, String address, String name, String description, List<Item> items, List<Order> orders) {
-        super(email, password, firstName, lastName);
+    public Vendor(String email, String password, String firstName, String lastName, String country, String city, String address, String phoneNumber, Long tin, String name, String description) {
+        super(email, password, firstName, lastName, country, city, address, phoneNumber);
         this.tin = tin;
-        this.country = country;
-        this.city = city;
-        this.address = address;
         this.name = name;
         this.description = description;
-        this.items = items;
-        this.orders = orders;
     }
 
-    public Vendor(RegisterRequestVendor request){
-        super(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName());
-
+    public Vendor(RegisterRequestVendor request) {
+        super(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), request.getCountry(), request.getCity(), request.getAddress(), request.getPhoneNumber());
         this.tin = request.getTin();
-        this.country = request.getCountry();
-        this.city = request.getCity();
-        this.address = request.getAddress();
         this.name = request.getName();
     }
 
@@ -68,36 +50,12 @@ public class Vendor extends User {
         this.tin = tin;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getDescription() {

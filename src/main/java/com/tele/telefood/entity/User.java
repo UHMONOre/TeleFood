@@ -1,7 +1,6 @@
 package com.tele.telefood.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,6 +24,18 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
+    private String country;
+
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
     private Boolean loggedInFlag = false;
 
     @Column(nullable = false)
@@ -35,11 +46,15 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String firstName, String lastName) {
+    public User(String email, String password, String firstName, String lastName, String country, String city, String address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.country = country;
+        this.city = city;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public Integer getId() {
@@ -76,6 +91,38 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Boolean getLoggedInFlag() {
