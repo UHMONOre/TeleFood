@@ -1,6 +1,7 @@
 package com.tele.telefood.controller;
 
 import com.tele.telefood.dto.LoginRequest;
+import com.tele.telefood.dto.RegisterRequestCourier;
 import com.tele.telefood.dto.RegisterRequestCustomer;
 import com.tele.telefood.dto.RegisterRequestVendor;
 import com.tele.telefood.service.UserService;
@@ -49,6 +50,19 @@ public class AuthController {
         try {
             Integer vendorId = userService.processRegister(registerRequest);
             return ResponseEntity.ok("{\"userId\": " + vendorId + " is successfully registered}");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(401).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Invalid entry");
+        }
+    }
+
+    @PostMapping("/register/courier")
+    public ResponseEntity<String> registerCourier(@RequestBody RegisterRequestCourier registerRequest) {
+        try {
+            Integer courierId = userService.processRegister(registerRequest);
+            return ResponseEntity.ok("{\"userId\": " + courierId + " is successfully registered}");
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(401).body(e.getMessage());
         } catch (Exception e) {

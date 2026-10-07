@@ -28,22 +28,23 @@ public class Item {
     private Integer quantity;
 
     @Column(nullable = false)
-    private Double cost;
-
-    @Column(nullable = false)
     private Double discount = 0.0;
 
     @Column(nullable = false)
     private Double total;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
+    private Order order;
+
     public Item() {
     }
 
-    public Item(String name, String description, Double price, Double cost, Integer quantity, Double discount, Double total) {
+    public Item(String name, String description, Double price, Integer quantity, Double discount, Double total) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.cost = cost;
         this.quantity = quantity;
         this.discount = discount;
         this.total = total;
@@ -83,14 +84,6 @@ public class Item {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
     }
 
     public Double getDiscount() {

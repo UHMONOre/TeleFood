@@ -1,12 +1,11 @@
 package com.tele.telefood.service;
 
-import com.tele.telefood.dto.LoginRequest;
-import com.tele.telefood.dto.RegisterRequestCustomer;
-import com.tele.telefood.dto.RegisterRequestVendor;
-import com.tele.telefood.dto.UpdateLocationRequest;
+import com.tele.telefood.dto.*;
+import com.tele.telefood.entity.Courier;
 import com.tele.telefood.entity.Customer;
 import com.tele.telefood.entity.User;
 import com.tele.telefood.entity.Vendor;
+import com.tele.telefood.repository.CourierRepository;
 import com.tele.telefood.repository.CustomerRepository;
 import com.tele.telefood.repository.UserRepository;
 import com.tele.telefood.repository.VendorRepository;
@@ -27,6 +26,9 @@ public class UserService {
 
     @Autowired
     private VendorRepository vendorRepository;
+
+    @Autowired
+    private CourierRepository courierRepository;
 
     @Transactional
     public Integer processLogin(@RequestBody LoginRequest loginRequest) throws Exception {
@@ -66,6 +68,19 @@ public class UserService {
         Vendor vendor = new Vendor(registerRequestVendor);
         vendorRepository.save(vendor);
         return vendor.getId();
+    }
+
+    @Transactional
+    public Integer processRegister(@RequestBody RegisterRequestCourier registerRequestCourier) throws Exception {
+        if (userRepository.findByEmail(registerRequestCourier.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("User already exists");
+        }else if (vendorRepository.findByTin(registerRequestCourier.getTin()).isPresent()){
+            throw new IllegalArgumentException("Courier already exists");
+        }
+
+        Courier courier = new Courier(registerRequestCourier);
+        courierRepository.save(courier);
+        return courier.getId();
     }
 
     @Transactional

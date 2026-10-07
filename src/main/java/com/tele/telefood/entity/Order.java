@@ -3,6 +3,9 @@ package com.tele.telefood.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -22,6 +25,13 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "courier_id")
+    private Courier courier;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
