@@ -1,6 +1,7 @@
 package com.tele.telefood.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tele.telefood.dto.CreateItemRequest;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,17 +25,14 @@ public class Item {
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
     private Double discount = 0.0;
 
-    @Column(nullable = false)
     private Double total;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     @JsonIgnore
     private Order order;
 
@@ -48,6 +46,13 @@ public class Item {
         this.quantity = quantity;
         this.discount = discount;
         this.total = total;
+    }
+
+    public Item(CreateItemRequest  request, Vendor vendor) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+        this.vendor = vendor;
     }
 
     public Integer getId() {
@@ -100,5 +105,21 @@ public class Item {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
