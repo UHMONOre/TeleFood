@@ -27,7 +27,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @PostMapping("/delete/{userid}")
+    @DeleteMapping("/delete/{userid}")
     public ResponseEntity<String> deleteUser(@RequestHeader("UserId") Integer userId, @PathVariable("userid") Integer deletedUserId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 

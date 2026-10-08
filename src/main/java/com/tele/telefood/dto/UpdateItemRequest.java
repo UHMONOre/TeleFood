@@ -1,11 +1,16 @@
 package com.tele.telefood.dto;
 
-public class CreateItemRequest {
+public class UpdateItemRequest {
+    private Integer itemId;
     private String name;
     private String description;
     private String category;
     private Double price;
-    private Integer vendorId;
+    private Double discount;
+
+    public Integer getItemId() {
+        return itemId;
+    }
 
     public String getName() {
         return name;
@@ -23,7 +28,7 @@ public class CreateItemRequest {
         return price;
     }
 
-    public Integer getVendorId() {
-        return vendorId;
+    public Double getDiscount() {
+        return discount;
     }
 }

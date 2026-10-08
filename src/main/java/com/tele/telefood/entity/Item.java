@@ -23,6 +23,9 @@ public class Item {
     private String description;
 
     @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
     private Double price;
 
     private Integer quantity;
@@ -51,6 +54,7 @@ public class Item {
     public Item(CreateItemRequest  request, Vendor vendor) {
         this.name = request.getName();
         this.description = request.getDescription();
+        this.category = request.getCategory();
         this.price = request.getPrice();
         this.vendor = vendor;
     }
@@ -73,6 +77,14 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Double getPrice() {
