@@ -1,7 +1,6 @@
 package com.tele.telefood.controller;
 
 import com.tele.telefood.dto.UpdateTinRequest;
-import com.tele.telefood.entity.Courier;
 import com.tele.telefood.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
