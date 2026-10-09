@@ -26,7 +26,7 @@ public class Item {
     private String category;
 
     @Column(nullable = false)
-    private Double price;
+    private Double price = 0.0;
 
     @Column(nullable = false)
     private Integer stock = 0;
