@@ -101,4 +101,16 @@ public class ItemService {
             throw new IllegalArgumentException("You can't update an item for another vendor other than your own.");
         }
     }
+
+    @Transactional
+    public void updateStock(Integer userId, Integer itemId, Integer stock) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+
+        if (item.getVendor().getId().equals(userId)) {
+            item.setStock(stock);
+            itemRepository.save(item);
+        } else {
+            throw new IllegalArgumentException("You can't update an item for another vendor other than your own.");
+        }
+    }
 }

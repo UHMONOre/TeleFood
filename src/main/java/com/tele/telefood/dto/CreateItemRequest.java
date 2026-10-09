@@ -6,6 +6,7 @@ public class CreateItemRequest {
     private String category;
     private Double price;
     private Integer vendorId;
+    private Integer stock;
 
     public String getName() {
         return name;
@@ -25,5 +26,9 @@ public class CreateItemRequest {
 
     public Integer getVendorId() {
         return vendorId;
+    }
+
+    public Integer getStock() {
+        return stock;
     }
 }

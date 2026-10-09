@@ -28,11 +28,13 @@ public class Item {
     @Column(nullable = false)
     private Double price;
 
-    private Integer quantity;
+    @Column(nullable = false)
+    private Integer stock = 0;
 
+    @Column(nullable = false)
     private Double discount = 0.0;
 
-    private Double total;
+    private Double total = price - (discount * price);
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -42,11 +44,11 @@ public class Item {
     public Item() {
     }
 
-    public Item(String name, String description, Double price, Integer quantity, Double discount, Double total) {
+    public Item(String name, String description, Double price, Integer stock, Double discount, Double total) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.quantity = quantity;
+        this.stock = stock;
         this.discount = discount;
         this.total = total;
     }
@@ -56,6 +58,7 @@ public class Item {
         this.description = request.getDescription();
         this.category = request.getCategory();
         this.price = request.getPrice();
+        this.stock = request.getStock();
         this.vendor = vendor;
     }
 
@@ -95,12 +98,12 @@ public class Item {
         this.price = price;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getStock() {
+        return stock;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public Double getDiscount() {

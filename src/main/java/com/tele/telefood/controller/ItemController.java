@@ -91,10 +91,23 @@ public class ItemController {
         }
     }
 
-    @PutMapping("update/discount")
+    @PutMapping("/update/discount")
     public ResponseEntity<String> updateDiscount(@RequestHeader("UserId") Integer userId, @RequestBody UpdateItemRequest request) {
         try {
             itemService.updateDiscount(userId, request.getItemId(), request.getDiscount());
+            return ResponseEntity.ok("Item updated successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
+
+    @PutMapping("/update/stock")
+    public ResponseEntity<String> updateStock(@RequestHeader("UserId") Integer userId, @RequestBody UpdateItemRequest request) {
+        try {
+            itemService.updateStock(userId, request.getItemId(), request.getStock());
             return ResponseEntity.ok("Item updated successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());

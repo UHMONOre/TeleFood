@@ -7,6 +7,7 @@ public class UpdateItemRequest {
     private String category;
     private Double price;
     private Double discount;
+    private Integer stock;
 
     public Integer getItemId() {
         return itemId;
@@ -30,5 +31,9 @@ public class UpdateItemRequest {
 
     public Double getDiscount() {
         return discount;
+    }
+
+    public Integer getStock() {
+        return stock;
     }
 }
