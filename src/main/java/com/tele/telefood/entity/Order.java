@@ -27,7 +27,10 @@ public class Order {
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Item> items = new ArrayList<>();
+    private List<OrderItem> items = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Double total;
 
     @ManyToOne
     @JoinColumn(name = "courier_id")
@@ -39,7 +42,7 @@ public class Order {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "vendor_Id", nullable = false)
+    @JoinColumn(name = "vendor_id", nullable = false)
     @JsonIgnore
     private Vendor vendor;
 
@@ -66,6 +69,30 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
     }
 
     public Customer getCustomer() {

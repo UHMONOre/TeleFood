@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tele.telefood.dto.CreateItemRequest;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "item")
 public class Item {
@@ -34,12 +37,11 @@ public class Item {
     @Column(nullable = false)
     private Double discount = 0.0;
 
+    @Column(nullable = false)
     private Double total = price - (discount * price);
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    @JsonIgnore
-    private Order order;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Item() {
     }
@@ -130,11 +132,11 @@ public class Item {
         this.vendor = vendor;
     }
 
-    public Order getOrder() {
-        return order;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }
