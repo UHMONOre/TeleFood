@@ -1,7 +1,6 @@
 package com.tele.telefood.controller;
 
-import com.tele.telefood.dto.UpdateTinRequest;
-import com.tele.telefood.dto.UpdateVendorNameRequest;
+import com.tele.telefood.dto.UpdateVendorRequest;
 import com.tele.telefood.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ public class VendorController {
     private VendorService vendorService;
 
     @PutMapping("/update/tin")
-    public ResponseEntity<String> updateTin(@RequestHeader("UserId") Integer userId, @RequestBody UpdateTinRequest request) {
+    public ResponseEntity<String> updateTin(@RequestHeader("UserId") Integer userId, @RequestBody UpdateVendorRequest request) {
         try {
             vendorService.UpdateTin(userId, request.getTin());
             return ResponseEntity.status(200).body("Successfully updated tin.");
@@ -27,7 +26,7 @@ public class VendorController {
     }
 
     @PutMapping("/update/name")
-    public ResponseEntity<String> updateName(@RequestHeader("UserId") Integer userId, @RequestBody UpdateVendorNameRequest request) {
+    public ResponseEntity<String> updateName(@RequestHeader("UserId") Integer userId, @RequestBody UpdateVendorRequest request) {
         try {
             vendorService.UpdateName(userId, request.getVendorName());
             return ResponseEntity.status(200).body("Successfully updated vendor name.");

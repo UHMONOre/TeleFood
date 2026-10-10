@@ -25,4 +25,14 @@ public class CourierService {
             throw new IllegalArgumentException("A vendor with the same tin already exists");
         }
     }
+
+    @Transactional
+    public void updateAvailability(Integer id, Boolean availability){
+
+        Courier courier = courierRepository.findById(id).orElseThrow(() -> new RuntimeException("Courier not found"));
+
+        courier.setAvailability(availability);
+
+        courierRepository.save(courier);
+    }
 }

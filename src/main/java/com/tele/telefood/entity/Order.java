@@ -18,13 +18,23 @@ public class Order {
         Failed
     }
 
+    public enum DeliveryMethod {
+        Pending,
+        Courier,
+        Takeout
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.Pending;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DeliveryMethod method =  DeliveryMethod.Pending;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
@@ -48,11 +58,11 @@ public class Order {
 
     public Order() {}
 
-    public Order(Integer id, OrderStatus status, Customer customer, Vendor vendor) {
-        this.id = id;
-        this.status = status;
+    public Order(Courier courier, Customer customer, Vendor vendor, Double total) {
+        this.courier = courier;
         this.customer = customer;
         this.vendor = vendor;
+        this.total = total;
     }
 
     public Integer getId() {
@@ -69,6 +79,14 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public DeliveryMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(DeliveryMethod method) {
+        this.method = method;
     }
 
     public List<OrderItem> getItems() {

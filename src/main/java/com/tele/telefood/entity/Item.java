@@ -37,8 +37,14 @@ public class Item {
     @Column(nullable = false)
     private Double discount = 0.0;
 
-    @Column(nullable = false)
-    private Double total = price - (discount * price);
+    @Transient
+    public Double getTotal() {
+        if (this.discount == null || this.price == null) {
+            return 0.0;
+        }
+
+        return this.price - (this.price * this.discount);
+    }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -46,13 +52,12 @@ public class Item {
     public Item() {
     }
 
-    public Item(String name, String description, Double price, Integer stock, Double discount, Double total) {
+    public Item(String name, String description, Double price, Integer stock, Double discount) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.discount = discount;
-        this.total = total;
     }
 
     public Item(CreateItemRequest  request, Vendor vendor) {
@@ -114,14 +119,6 @@ public class Item {
 
     public void setDiscount(Double discount) {
         this.discount = discount;
-    }
-
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
     }
 
     public Vendor getVendor() {

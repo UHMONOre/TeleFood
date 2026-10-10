@@ -13,7 +13,7 @@ public class Courier extends User{
     private Long tin;
 
     @Column(nullable = false)
-    private Boolean available = false;
+    private Boolean availability = false;
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
@@ -40,6 +40,14 @@ public class Courier extends User{
 
     public void setTin(Long tin) {
         this.tin = tin;
+    }
+
+    public Boolean getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(Boolean availability) {
+        this.availability = availability;
     }
 
     public List<Order> getOrders() {
