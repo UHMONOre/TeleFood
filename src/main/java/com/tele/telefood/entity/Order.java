@@ -40,7 +40,7 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
 
     @Column(nullable = false)
-    private Double total;
+    private Double total = 0.0;
 
     @ManyToOne
     @JoinColumn(name = "courier_id")
@@ -58,11 +58,9 @@ public class Order {
 
     public Order() {}
 
-    public Order(Courier courier, Customer customer, Vendor vendor, Double total) {
-        this.courier = courier;
+    public Order(Customer customer, Vendor vendor) {
         this.customer = customer;
         this.vendor = vendor;
-        this.total = total;
     }
 
     public Integer getId() {

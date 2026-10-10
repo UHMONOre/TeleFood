@@ -29,10 +29,11 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Order order, Item item, Integer quantity) {
+    public OrderItem(Order order, Item item, Integer quantity, Double price) {
         this.order = order;
-        this.quantity = quantity;
         this.item = item;
+        this.quantity = quantity;
+        this.price = price;
     }
 
     public Order getOrder() {

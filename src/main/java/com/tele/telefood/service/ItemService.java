@@ -20,15 +20,11 @@ public class ItemService {
 
     @Transactional
     public void createItem(Integer userId, CreateItemRequest request) {
-        Vendor vendor = vendorRepository.findById(request.getVendorId()).orElseThrow(() -> new RuntimeException("Vendor not found"));
+        Vendor vendor = vendorRepository.findById(userId).orElseThrow(() -> new RuntimeException("Vendor not found"));
 
-        if (userId.equals(vendor.getId())) {
-            Item item = new Item(request, vendor);
+        Item item = new Item(request, vendor);
 
-            itemRepository.save(item);
-        } else {
-            throw new IllegalArgumentException("You can't create an item for another vendor other than your own.");
-        }
+        itemRepository.save(item);
     }
 
     @Transactional
