@@ -1,6 +1,7 @@
 package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
+import com.tele.telefood.dto.notification.OrderVendorNotification;
 import com.tele.telefood.entity.Customer;
 import com.tele.telefood.entity.Item;
 import com.tele.telefood.entity.Order;
@@ -10,6 +11,7 @@ import com.tele.telefood.repository.ItemRepository;
 import com.tele.telefood.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,12 @@ public class OrderService {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public OrderService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @Transactional
     public void createOrder(Integer customerId, List<OrderItemRequest> requestedItems) {
@@ -46,6 +54,10 @@ public class OrderService {
                 throw new IllegalArgumentException("Cannot mix items from different vendors");
             }
 
+            if (currentItem.getStock() < req.getQuantity()) {
+                throw new IllegalArgumentException("Not enough stock for item: " + currentItem.getName() + ". Only " + currentItem.getStock() + " left.");
+            }
+
             currentItem.setStock(currentItem.getStock() - req.getQuantity());
 
             OrderItem orderItem = new OrderItem(order, currentItem, req.getQuantity(), currentItem.getTotal());
@@ -57,5 +69,11 @@ public class OrderService {
 
         order.setTotal(finalTotal);
         orderRepository.save(order);
+
+        OrderVendorNotification notification = new OrderVendorNotification(order.getId(), order.getTotal());
+
+        String vendorChannel = "/topic/vendor/" + order.getVendor().getId();
+
+        messagingTemplate.convertAndSend(vendorChannel, notification);
     }
 }
