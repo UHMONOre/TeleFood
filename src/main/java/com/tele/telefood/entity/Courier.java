@@ -15,7 +15,7 @@ public class Courier extends User{
     @Column(nullable = false)
     private Boolean availability = false;
 
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
     public Courier() {}

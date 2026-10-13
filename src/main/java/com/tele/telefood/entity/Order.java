@@ -56,6 +56,14 @@ public class Order {
     @JsonIgnore
     private Vendor vendor;
 
+    @ManyToMany
+    @JoinTable(
+            name = "order_rejected_couriers",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "courier_id")
+    )
+    private List<Courier> rejectedCouriers = new ArrayList<>();
+
     public Order() {}
 
     public Order(Customer customer, Vendor vendor) {
@@ -125,5 +133,13 @@ public class Order {
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
+    }
+
+    public List<Courier> getRejectedCouriers() {
+        return rejectedCouriers;
+    }
+
+    public void setRejectedCouriers(List<Courier> rejectedCouriers) {
+        this.rejectedCouriers = rejectedCouriers;
     }
 }
