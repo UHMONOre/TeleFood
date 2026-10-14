@@ -44,6 +44,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "courier_id")
+    @JsonIgnore
     private Courier courier;
 
     @ManyToOne
@@ -62,6 +63,7 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "courier_id")
     )
+    @JsonIgnore
     private List<Courier> rejectedCouriers = new ArrayList<>();
 
     public Order() {}

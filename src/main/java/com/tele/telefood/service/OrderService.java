@@ -145,6 +145,8 @@ public class OrderService {
             orderRepository.save(order);
 
             assignNextAvailableCourier(orderId);
+        } else {
+            throw new IllegalStateException("This order is no longer available.");
         }
     }
 
@@ -187,13 +189,7 @@ public class OrderService {
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
 
         } else {
-            OrderCourierStatusNotification errorNotification = new OrderCourierStatusNotification(
-                    order.getId(),
-                    "This order is no longer available or the acceptance timer expired.",
-                    false
-            );
-
-            messagingTemplate.convertAndSend("/topic/courier/" + courierId, errorNotification);
+            throw new IllegalStateException("This order is no longer available or the acceptance timer expired.");
         }
     }
 }
