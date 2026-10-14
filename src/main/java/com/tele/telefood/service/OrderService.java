@@ -2,6 +2,7 @@ package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
 import com.tele.telefood.dto.notification.OrderCourierNotification;
+import com.tele.telefood.dto.notification.OrderCourierStatusNotification;
 import com.tele.telefood.dto.notification.OrderCustomerNotification;
 import com.tele.telefood.dto.notification.OrderVendorNotification;
 import com.tele.telefood.entity.*;
@@ -159,6 +160,40 @@ public class OrderService {
             && order.getMethod() == Order.DeliveryMethod.Pending) {
 
             processCourierRejection(orderId, courierId);
+        }
+    }
+
+    @Transactional
+    public void processCourierAcceptation(Integer orderId, Integer courierId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (order.getCourier() != null
+            && order.getCourier().getId().equals(courierId)
+            && order.getMethod().equals(Order.DeliveryMethod.Pending)) {
+
+            order.setMethod(Order.DeliveryMethod.Courier);
+            orderRepository.save(order);
+
+            Courier courier = order.getCourier();
+            courier.setAvailability(false);
+            courierRepository.save(courier);
+
+            OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                    order.getId(),
+                    "A courier has accepted your order and will deliver it to you.",
+                    Order.DeliveryMethod.Courier
+            );
+
+            messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+        } else {
+            OrderCourierStatusNotification errorNotification = new OrderCourierStatusNotification(
+                    order.getId(),
+                    "This order is no longer available or the acceptance timer expired.",
+                    false
+            );
+
+            messagingTemplate.convertAndSend("/topic/courier/" + courierId, errorNotification);
         }
     }
 }
