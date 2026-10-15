@@ -6,10 +6,7 @@ import com.tele.telefood.dto.notification.OrderCourierStatusNotification;
 import com.tele.telefood.dto.notification.OrderCustomerNotification;
 import com.tele.telefood.dto.notification.OrderVendorNotification;
 import com.tele.telefood.entity.*;
-import com.tele.telefood.repository.CourierRepository;
-import com.tele.telefood.repository.CustomerRepository;
-import com.tele.telefood.repository.ItemRepository;
-import com.tele.telefood.repository.OrderRepository;
+import com.tele.telefood.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -31,6 +28,9 @@ public class OrderService {
 
     @Autowired
     private CourierRepository courierRepository;
+
+    @Autowired
+    private VendorRepository vendorRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -94,6 +94,57 @@ public class OrderService {
     }
 
     @Transactional
+    public void cancelOrder(Integer vendorId, Integer orderId) {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(()  -> new RuntimeException("Vendor not found"));
+
+        Order order = orderRepository.findById(orderId).orElseThrow(()  -> new RuntimeException("Order not found"));
+
+        if (!order.getVendor().getId().equals(vendor.getId())) {
+            throw new RuntimeException("You are not authorized to cancel this order.");
+        }
+
+        if (order.getStatus() == Order.OrderStatus.Completed || order.getStatus() == Order.OrderStatus.Failed) {
+            throw new RuntimeException("Cannot cancel an order with status: " + order.getStatus());
+        }
+
+        for (OrderItem orderItem : order.getItems()) {
+            Item item = orderItem.getItem();
+            item.setStock(item.getStock() + orderItem.getQuantity());
+            itemRepository.save(item);
+        }
+
+        Courier assignedCourier = order.getCourier();
+        order.setCourier(null);
+        order.setStatus(Order.OrderStatus.Failed);
+        orderRepository.save(order);
+
+        OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                order.getId(),
+                "Your order from " + order.getVendor().getName() + " has been cancelled by the store.",
+                order.getMethod()
+        );
+        messagingTemplate.convertAndSend(
+                "/topic/customer/" + order.getCustomer().getId(),
+                customerNotification
+        );
+
+        if (assignedCourier != null) {
+            assignedCourier.setAvailability(true);
+            courierRepository.save(assignedCourier);
+
+            OrderCourierStatusNotification courierNotification = new OrderCourierStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " from " + order.getVendor().getName() + " has been cancelled by the store."
+            );
+
+            messagingTemplate.convertAndSend(
+                    "/topic/courier/" + assignedCourier.getId(),
+                    courierNotification
+            );
+        }
+    }
+
+    @Transactional
     public void assignNextAvailableCourier(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
 
@@ -139,7 +190,10 @@ public class OrderService {
 
         Courier rejectedCourier = courierRepository.findById(courierId).orElseThrow(() -> new RuntimeException("Courier not found"));
 
-        if (order.getCourier() != null && order.getCourier().getId().equals(courierId)) {
+        if (order.getCourier() != null
+                && order.getCourier().getId().equals(courierId)
+                && order.getMethod() == Order.DeliveryMethod.Pending) {
+
             order.getRejectedCouriers().add(rejectedCourier);
             order.setCourier(null);
             orderRepository.save(order);

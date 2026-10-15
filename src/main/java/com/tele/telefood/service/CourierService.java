@@ -1,10 +1,13 @@
 package com.tele.telefood.service;
 
 import com.tele.telefood.entity.Courier;
+import com.tele.telefood.entity.Order;
 import com.tele.telefood.repository.CourierRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CourierService {
@@ -31,8 +34,14 @@ public class CourierService {
 
         Courier courier = courierRepository.findById(id).orElseThrow(() -> new RuntimeException("Courier not found"));
 
-        courier.setAvailability(availability);
+        List<Order> activeOrders = courierRepository.findActiveOrders(courier.getId());
 
-        courierRepository.save(courier);
+        if (activeOrders.isEmpty()) {
+            courier.setAvailability(availability);
+
+            courierRepository.save(courier);
+        } else {
+            throw new RuntimeException("Courier with an active order cannot change availability");
+        }
     }
 }

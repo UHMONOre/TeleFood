@@ -32,6 +32,8 @@ public class CourierController {
             return ResponseEntity.ok("Availability updated successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Server error occurred.");

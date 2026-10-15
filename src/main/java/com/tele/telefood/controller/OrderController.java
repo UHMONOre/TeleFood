@@ -27,6 +27,21 @@ public class OrderController {
         }
     }
 
+    @PostMapping("{orderId}/cancel")
+    public ResponseEntity<String> cancelOrder(@RequestHeader("UserId") Integer vendorId, @PathVariable Integer orderId) {
+        try {
+            orderService.cancelOrder(vendorId, orderId);
+            return ResponseEntity.status(200).body("Order successfully cancelled.");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
+
     @PostMapping("/{orderId}/accept")
     public ResponseEntity<String> acceptOrder(@RequestHeader("UserId") Integer courierId, @PathVariable Integer orderId) {
         try {
