@@ -1,10 +1,7 @@
 package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
-import com.tele.telefood.dto.notification.OrderCourierNotification;
-import com.tele.telefood.dto.notification.OrderCourierStatusNotification;
-import com.tele.telefood.dto.notification.OrderCustomerNotification;
-import com.tele.telefood.dto.notification.OrderVendorNotification;
+import com.tele.telefood.dto.notification.*;
 import com.tele.telefood.entity.*;
 import com.tele.telefood.repository.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -244,6 +241,125 @@ public class OrderService {
 
         } else {
             throw new IllegalStateException("This order is no longer available or the acceptance timer expired.");
+        }
+    }
+
+    @Transactional
+    public void updateStatusPreparing(Integer orderId, Integer vendorId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getVendor().getId().equals(vendorId)) {
+            throw new RuntimeException("You are not authorized to update the status of this order.");
+        }
+
+        if (order.getStatus() == Order.OrderStatus.Pending) {
+            order.setStatus(Order.OrderStatus.Preparing);
+            orderRepository.save(order);
+
+            OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                    order.getId(),
+                    "Your order is getting prepared.",
+                    order.getMethod()
+            );
+
+            messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+        } else {
+            throw new IllegalStateException("You cannot update the status to preparing from " + order.getStatus());
+        }
+    }
+
+    @Transactional
+    public void updateStatusDelivering(Integer orderId, Integer vendorId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getVendor().getId().equals(vendorId)) {
+            throw new RuntimeException("You are not authorized to update the status of this order.");
+        }
+
+        if (order.getMethod() == Order.DeliveryMethod.Pending) {
+            throw new IllegalStateException("Cannot set to delivering while courier assignment is still pending.");
+        }
+
+        if (order.getStatus() == Order.OrderStatus.Preparing) {
+            order.setStatus(Order.OrderStatus.Delivering);
+            orderRepository.save(order);
+
+            OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                    order.getId(),
+                    "Your order is getting delivered.",
+                    order.getMethod()
+            );
+
+            messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+        } else {
+            throw new IllegalStateException("You cannot update the status to delivering from " + order.getStatus());
+        }
+    }
+
+    @Transactional
+    public void updateStatusCompleted(Integer orderId, Integer vendorId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getVendor().getId().equals(vendorId)) {
+            throw new RuntimeException("You are not authorized to update the status of this order.");
+        }
+
+        if (order.getStatus() == Order.OrderStatus.Delivering
+            && order.getMethod() == Order.DeliveryMethod.Takeout) {
+            order.setStatus(Order.OrderStatus.Completed);
+            orderRepository.save(order);
+
+            OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                    order.getId(),
+                    "Your order is completed.",
+                    order.getMethod()
+            );
+
+            messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+        } else if (order.getMethod() == Order.DeliveryMethod.Courier) {
+            throw new IllegalStateException("Only the courier is authorized to complete this order.");
+        } else if (order.getMethod() == Order.DeliveryMethod.Pending) {
+            throw new  IllegalStateException("Courier has not yet been found.");
+        } else {
+            throw new IllegalStateException("You cannot update the status to completed from " + order.getStatus());
+        }
+    }
+
+    @Transactional
+    public void updateStatusCompletedByCourier(Integer orderId, Integer courierId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (order.getCourier() == null || !order.getCourier().getId().equals(courierId)) {
+            throw new RuntimeException("You are not authorized to update the status of this order.");
+        }
+
+        if (order.getStatus().equals(Order.OrderStatus.Delivering)) {
+            order.setStatus(Order.OrderStatus.Completed);
+            orderRepository.save(order);
+
+            Courier courier = order.getCourier();
+            courier.setAvailability(true);
+            courierRepository.save(courier);
+
+            OrderCustomerNotification customerNotification = new OrderCustomerNotification(
+                    order.getId(),
+                    "Your order is delivered.",
+                    Order.DeliveryMethod.Courier
+            );
+
+            messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " has been delivered to the customer by the courier.",
+                    Order.OrderStatus.Completed
+            );
+            messagingTemplate.convertAndSend(
+                    "/topic/vendor/" + order.getVendor().getId(),
+                    vendorNotification
+            );
+        } else {
+            throw new IllegalStateException("You can only complete this order if the order status is Delivering.");
         }
     }
 }
