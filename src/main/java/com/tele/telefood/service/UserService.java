@@ -74,13 +74,26 @@ public class UserService {
     public Integer processRegister(@RequestBody RegisterRequestCourier registerRequestCourier) throws Exception {
         if (userRepository.findByEmail(registerRequestCourier.getEmail()).isPresent()) {
             throw new IllegalArgumentException("User already exists");
-        }else if (vendorRepository.findByTin(registerRequestCourier.getTin()).isPresent()){
+        }else if (courierRepository.findByTin(registerRequestCourier.getTin()).isPresent()){
             throw new IllegalArgumentException("Courier already exists");
         }
 
         Courier courier = new Courier(registerRequestCourier);
         courierRepository.save(courier);
         return courier.getId();
+    }
+
+    @Transactional
+    public String findUserType(Integer id) {
+        if (customerRepository.existsById(id)) {
+            return "Customer";
+        } else if (vendorRepository.existsById(id)) {
+            return "Vendor";
+        } else if (courierRepository.existsById(id)) {
+            return "Courier";
+        } else {
+            throw new IllegalArgumentException("User not found with ID: " + id);
+        }
     }
 
     @Transactional

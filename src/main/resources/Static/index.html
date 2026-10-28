@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeleFood - Login</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+
+<div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+    <h3 class="text-center mb-4">TeleFood Login</h3>
+
+    <!-- Alert box for errors or success messages -->
+    <div id="messageBox" class="alert d-none" role="alert"></div>
+
+    <!-- Email Bar -->
+    <div class="mb-3">
+        <label for="emailInput" class="form-label">Email</label>
+        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" required>
+    </div>
+
+    <!-- Password Bar -->
+    <div class="mb-3">
+        <label for="passwordInput" class="form-label">Password</label>
+        <input type="password" class="form-control" id="passwordInput" placeholder="Enter your password" required>
+    </div>
+
+    <!-- Login Button -->
+    <button id="loginBtn" class="btn btn-primary w-100 mb-3" onclick="handleLogin()">
+        Log In
+    </button>
+
+    <div class="text-center">
+        <small class="text-muted">Don't have an account? <a href="register.html">Register here</a></small>
+    </div>
+</div>
+
+<!-- External JS file -->
+<script src="login.js"></script>
+</body>
+</html>

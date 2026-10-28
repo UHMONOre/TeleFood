@@ -27,6 +27,15 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    @GetMapping("/{userId}/type")
+    public String getUserType(@PathVariable Integer userId) {
+        try {
+            return userService.findUserType(userId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @DeleteMapping("/delete/{userid}")
     public ResponseEntity<String> deleteUser(@RequestHeader("UserId") Integer userId, @PathVariable("userid") Integer deletedUserId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
