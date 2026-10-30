@@ -1,5 +1,6 @@
 package com.tele.telefood.service;
 
+import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.entity.Vendor;
 import com.tele.telefood.repository.VendorRepository;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,15 @@ import org.springframework.stereotype.Service;
 public class VendorService {
     @Autowired
     private VendorRepository vendorRepository;
+
+    @Transactional
+    public ReceiveUserInfo getVendorInfo(Integer id) {
+        Vendor vendor  = vendorRepository.findById(id).orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        ReceiveUserInfo receiveUserInfo = new ReceiveUserInfo(vendor);
+
+        return receiveUserInfo;
+    }
 
     @Transactional
     public void UpdateTin(Integer id, long tin) {

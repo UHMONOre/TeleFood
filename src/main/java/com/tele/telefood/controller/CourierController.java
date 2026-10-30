@@ -1,5 +1,6 @@
 package com.tele.telefood.controller;
 
+import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.dto.UpdateCourierRequest;
 import com.tele.telefood.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,19 @@ import org.springframework.web.bind.annotation.*;
 public class CourierController {
     @Autowired
     private CourierService courierService;
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getCourierInfo(@RequestHeader("UserId") Integer id){
+        try {
+            ReceiveUserInfo courierInfo = courierService.getCourierInfo(id);
+            return ResponseEntity.ok(courierInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
 
     @PutMapping("/update/tin")
     public ResponseEntity<String> updateTin(@RequestHeader("UserId") Integer id, @RequestBody UpdateCourierRequest request) {

@@ -1,5 +1,6 @@
 package com.tele.telefood.controller;
 
+import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.dto.UpdateVendorRequest;
 import com.tele.telefood.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,19 @@ import org.springframework.web.bind.annotation.*;
 public class VendorController {
     @Autowired
     private VendorService vendorService;
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getVendorInfo(@RequestHeader("UserId") Integer id) {
+        try {
+            ReceiveUserInfo vendorInfo = vendorService.getVendorInfo(id);
+            return ResponseEntity.ok(vendorInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
 
     @PutMapping("/update/tin")
     public ResponseEntity<String> updateTin(@RequestHeader("UserId") Integer userId, @RequestBody UpdateVendorRequest request) {

@@ -38,7 +38,7 @@ async function handleLogin() {
         const userId = parseInt(match[0], 10);
 
         // Save UserId in the browser so all future requests can send @RequestHeader("UserId")
-        localStorage.setItem("userId", userId);
+        localStorage.setItem("UserId", userId);
 
         showMessage("Login successful! Redirecting...", "alert-success");
 

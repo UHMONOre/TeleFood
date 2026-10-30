@@ -1,5 +1,6 @@
 package com.tele.telefood.service;
 
+import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.entity.Courier;
 import com.tele.telefood.entity.Order;
 import com.tele.telefood.repository.CourierRepository;
@@ -13,6 +14,15 @@ import java.util.List;
 public class CourierService {
     @Autowired
     private CourierRepository courierRepository;
+
+    @Transactional
+    public ReceiveUserInfo getCourierInfo(Integer id){
+        Courier courier = courierRepository.findById(id).orElseThrow(() -> new RuntimeException("Courier not found"));
+
+        ReceiveUserInfo receiveUserInfo = new ReceiveUserInfo(courier);
+
+        return receiveUserInfo;
+    }
 
     @Transactional
     public void updateTin(Integer id, Long tin){
