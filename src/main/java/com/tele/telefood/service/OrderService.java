@@ -1,6 +1,7 @@
 package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
+import com.tele.telefood.dto.ReceiveOrderInfo;
 import com.tele.telefood.dto.notification.*;
 import com.tele.telefood.entity.*;
 import com.tele.telefood.repository.*;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeErrorException;
 import java.util.List;
 
 @Service
@@ -38,6 +40,19 @@ public class OrderService {
 
     @Autowired
     private org.springframework.scheduling.TaskScheduler taskScheduler;
+
+    @Transactional
+    public ReceiveOrderInfo getOrderInfo(Integer vendorId) {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        List<Order> activeOrders = orderRepository.findActiveOrders(vendorId);
+        List<Order> completedOrders = orderRepository.findCompletedOrders(vendorId);
+        List<Order> failedOrders = orderRepository.findFailedOrders(vendorId);
+
+        ReceiveOrderInfo orderInfo = new ReceiveOrderInfo(activeOrders, completedOrders, failedOrders);
+
+        return orderInfo;
+    }
 
     @Transactional
     public void startCourierAssignment(Integer orderId) {

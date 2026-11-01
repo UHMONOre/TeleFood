@@ -44,7 +44,7 @@
     <!-- General Error / Status Message Box (hidden by default) -->
     <div id="messageBox" class="alert d-none" role="alert"></div>
 
-    <!-- First Half: Active Orders Section -->
+    <!-- Box 1: Active Orders Section -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Active Orders</h5>
@@ -52,20 +52,29 @@
         </div>
         <div class="card-body">
             <p id="noActiveOrdersText" class="text-muted mb-0">No active orders at the moment.</p>
-            <!-- JS will inject clickable active order cards inside this div -->
             <div id="activeOrdersContainer" class="row g-3"></div>
         </div>
     </div>
 
-    <!-- Second Half: Completed Orders Section -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
+    <!-- Box 2: Completed Orders Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
             <h5 class="mb-0">Completed Orders</h5>
         </div>
         <div class="card-body">
             <p id="noCompletedOrdersText" class="text-muted mb-0">No completed orders yet.</p>
-            <!-- JS will inject clickable completed order cards inside this div -->
             <div id="completedOrdersContainer" class="row g-3"></div>
+        </div>
+    </div>
+
+    <!-- Box 3: Cancelled Orders Section -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Cancelled Orders</h5>
+        </div>
+        <div class="card-body">
+            <p id="noCancelledOrdersText" class="text-muted mb-0">No cancelled orders.</p>
+            <div id="cancelledOrdersContainer" class="row g-3"></div>
         </div>
     </div>
 

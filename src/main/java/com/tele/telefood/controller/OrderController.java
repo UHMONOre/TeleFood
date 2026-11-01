@@ -1,6 +1,7 @@
 package com.tele.telefood.controller;
 
 import com.tele.telefood.dto.OrderItemRequest;
+import com.tele.telefood.dto.ReceiveOrderInfo;
 import com.tele.telefood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,18 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
+    @GetMapping("/all/info")
+    public ResponseEntity<?> getOrderInfo(@RequestHeader("UserId") Integer vendorId) {
+        try {
+            ReceiveOrderInfo orderInfo = orderService.getOrderInfo(vendorId);
+            return ResponseEntity.ok().body(orderInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
 
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(@RequestHeader("UserId") Integer customerId, @RequestBody List<OrderItemRequest> requestedItems) {
