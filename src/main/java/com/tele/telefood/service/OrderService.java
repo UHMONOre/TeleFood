@@ -2,9 +2,11 @@ package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
 import com.tele.telefood.dto.ReceiveOrderInfo;
+import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.dto.notification.*;
 import com.tele.telefood.entity.*;
 import com.tele.telefood.repository.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -376,5 +379,20 @@ public class OrderService {
         } else {
             throw new IllegalStateException("You can only complete this order if the order status is Delivering.");
         }
+    }
+
+    @Transactional
+    public ReceiveUserInfo getCustomerInfo(Integer vendorId, Integer orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getVendor().getId().equals(vendorId)) {
+            throw new IllegalArgumentException("You are not authorized to view customer info from this order.");
+        }
+
+        Customer customer = order.getCustomer();
+
+        ReceiveUserInfo customerInfo = new ReceiveUserInfo(customer);
+
+        return customerInfo;
     }
 }

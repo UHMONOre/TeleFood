@@ -28,11 +28,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/type")
-    public String getUserType(@PathVariable Integer userId) {
+    public ResponseEntity<String> getUserType(@PathVariable("userId") Integer userId) {
         try {
-            return userService.findUserType(userId);
+            return ResponseEntity.ok(userService.findUserType(userId));
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error");
         }
     }
 

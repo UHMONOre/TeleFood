@@ -84,6 +84,17 @@ public class UserService {
     }
 
     @Transactional
+    public Integer processLogout(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setLoggedInFlag(false);
+
+        userRepository.save(user);
+
+        return user.getId();
+    }
+
+    @Transactional
     public String findUserType(Integer id) {
         if (customerRepository.existsById(id)) {
             return "Customer";

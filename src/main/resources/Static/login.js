@@ -53,21 +53,33 @@ async function handleLogin() {
 
 async function redirectByUserRole(userId) {
     try {
-        const response = await fetch("/user/" + userId + "/type");
+        const response = await fetch("/user/" + userId + "/type", {
+            method: "GET",
+            headers: {
+                "UserId": userId
+            }
+        });
+
+        if (!response.ok) {
+            console.error("Server rejected type fetch:", response.status);
+            showMessage("Could not connect to the server.", "alert-danger");
+            return;
+        }
+
         const userType = (await response.text()).trim();
 
-        if (userType == "Customer") {
+        if (userType === "Customer") {
             window.location.href = "customer.html";
-        } else if (userType == "Vendor") {
+        } else if (userType === "Vendor") {
             window.location.href = "vendor.html";
-        } else if (userType == "Courier") {
+        } else if (userType === "Courier") {
             window.location.href = "courier.html";
         } else {
             console.error("Unknown user role returned:", userType);
             showMessage("Could not determine user role.", "alert-danger");
         }
     } catch (error) {
-        console.error("Role detection error:", err);
+        console.error("Role detection error:", error);
         showMessage("Failed to fetch user role.", "alert-danger");
     }
 }

@@ -16,8 +16,13 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // Let browser preflight requests pass unconditionally
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            return true;
+        }
+
         // 1. Get the ID string from the header
-        String userIdString = request.getHeader("User-ID");
+        String userIdString = request.getHeader("UserId");
 
         // If it is missing, block them
         if (userIdString == null || userIdString.isEmpty()) {

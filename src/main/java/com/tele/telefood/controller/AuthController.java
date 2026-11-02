@@ -7,10 +7,7 @@ import com.tele.telefood.dto.RegisterRequestVendor;
 import com.tele.telefood.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -64,6 +61,19 @@ public class AuthController {
             Integer courierId = userService.processRegister(registerRequest);
             return ResponseEntity.ok("{\"userId\": " + courierId + " is successfully registered}");
         } catch (IllegalArgumentException e){
+            return ResponseEntity.status(401).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Invalid entry");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("UserId") Integer userId) {
+        try {
+            userService.processLogout(userId);
+            return ResponseEntity.ok("{\"userId\": " + userId + " is successfully logged out}");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();

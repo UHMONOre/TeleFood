@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = async function() {
     const vendorId = localStorage.getItem("UserId");
 
     if (!vendorId) {
@@ -6,9 +6,58 @@ window.onload = function() {
         return;
     }
 
+    try {
+        const response = await fetch("/vendor/info", {
+            method: "GET",
+            headers: {
+                "UserId": vendorId
+            }
+        });
+
+        if (!response.ok) {
+            localStorage.removeItem("UserId");
+            window.location.href = "index.html";
+            return;
+        }
+    } catch (error) {
+        console.error("Error fetching vendor", error);
+        localStorage.removeItem("UserId");
+        window.location.href = "index.html";
+        return;
+    }
+
     loadVendorName(vendorId);
     loadVendorOrders(vendorId);
     connectVendorWebSocket(vendorId);
+}
+
+async function handleLogout() {
+    const vendorId = localStorage.getItem("UserId");
+
+    if (!vendorId) {
+        window.location.href = "index.html";
+    }
+
+    try {
+        const response = await fetch("/api/auth/logout", {
+            method: "POST",
+            headers: {
+                "UserId": vendorId
+            }
+        });
+
+        if (response.ok) {
+            showMessage("Logout successful! Redirecting...", "alert-success");
+
+            localStorage.removeItem("UserId");
+
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1200);
+        }
+    } catch (error) {
+        console.error("Could not logout", error);
+    }
 }
 
 async function loadVendorName(vendorId) {
@@ -60,9 +109,12 @@ async function loadVendorOrders(vendorId) {
             const activeOrders = info.activeOrders || [];
             if (activeOrders.length > 0) {
                 noActiveText.classList.add("d-none");
-                activeOrders.forEach((order) => {
-                    activeContainer.appendChild(createOrderCard(order, "bg-primary"));
-                });
+                for (const order of activeOrders) {
+                    const card = await createOrderCard(order, vendorId, "bg-primary");
+                    if (card) {
+                        activeContainer.appendChild(card);
+                    }
+                }
             } else {
                 noActiveText.classList.remove("d-none");
             }
@@ -70,9 +122,12 @@ async function loadVendorOrders(vendorId) {
             const completedOrders = info.completedOrders || [];
             if (completedOrders.length > 0) {
                 noCompletedText.classList.add("d-none");
-                completedOrders.forEach((order) => {
-                    completedContainer.appendChild(createOrderCard(order, "bg-success"));
-                });
+                for (const order of completedOrders) {
+                    const card = await createOrderCard(order, vendorId, "bg-success");
+                    if (card) {
+                        completedContainer.appendChild(card);
+                    }
+                }
             } else {
                 noCompletedText.classList.remove("d-none");
             }
@@ -80,13 +135,15 @@ async function loadVendorOrders(vendorId) {
             const cancelledOrders = info.cancelledOrders || [];
             if (cancelledOrders.length > 0) {
                 noCancelledText.classList.add("d-none");
-                cancelledOrders.forEach((order) => {
-                    completedContainer.appendChild(createOrderCard(order, "bg-danger"));
-                });
+                for (const order of cancelledOrders) {
+                    const card = await createOrderCard(order, vendorId, "bg-danger");
+                    if (card) {
+                        cancelledContainer.appendChild(card);
+                    }
+                }
             } else {
                 noCancelledText.classList.remove("d-none");
             }
-
         }
     } catch (error) {
         console.error("Error loading orders for vendor:", error);
@@ -111,7 +168,9 @@ function connectVendorWebSocket(vendorId) {
                 showWsNotification(notification.message);
             }
 
-            loadVendorOrders();
+            setTimeout(() => {
+                loadVendorOrders();
+            }, 300);
         });
     });
 }
@@ -127,23 +186,63 @@ function hideNotification() {
     document.getElementById("wsNotificationBox").classList.add("d-none");
 }
 
-// Builds a clickable Bootstrap card for an individual Order
-function createOrderCard(order, badgeColorClass) {
+async function createOrderCard(order, vendorId, badgeColorClass) {
     const col = document.createElement("div");
     col.className = "col-md-6";
 
-    col.innerHTML = `
-        <div class="card border shadow-sm h-100" style="cursor: pointer;"
-             onclick="window.location.href='order.html?orderId=${order.id}'">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="fw-bold mb-1">Order #${order.id}</h6>
-                    <small class="text-muted">Total: €${order.total}</small>
-                </div>
-                <span class="badge ${badgeColorClass}">${order.status}</span>
-            </div>
-        </div>
-    `;
+    try {
+        const response = await fetch("/order/" + order.id + "/customer/info", {
+            method: "GET",
+            headers: {
+                "UserId": vendorId
+            }
+        });
 
-    return col;
+        if (response.ok) {
+            const customerInfo = await response.json();
+            const firstName = customerInfo.firstName;
+            const lastName = customerInfo.lastName;
+            const address = customerInfo.address;
+            const deliveryStatus = order.status;
+            const deliveryMethod = order.method;
+
+            col.innerHTML = `
+                <div class="card border shadow-sm h-100" style="cursor: pointer;"
+                    onclick="window.location.href='order.html?orderId=${order.id}'">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <!-- Left Side: Customer & Price -->
+                        <div>
+                            <h6 class="fw-bold mb-1">${firstName} ${lastName}</h6>
+                            <div class="text-muted small mb-2">${address}</div>
+                            <div class="fw-semibold small">Total: €${order.total}</div>
+                        </div>
+                        
+                        <!-- Right Side: Status & Delivery Method Bars -->
+                        <div class="d-flex flex-column align-items-end gap-2">
+                            <div class="d-flex align-items-center">
+                                <small class="text-muted me-2 fw-bold">Status:</small>
+                                <span class="badge ${badgeColorClass}" style="width: 85px;">${deliveryStatus}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <small class="text-muted me-2 fw-bold">Method:</small>
+                                <span class="badge bg-dark" style="width: 85px;">${deliveryMethod}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return col;
+        }
+    } catch (error) {
+        console.error("Error creating order cards", error);
+    }
+
+    return null;
+}
+
+function showMessage(text, alertClass) {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.textContent = text;
+    messageBox.className = "alert " + alertClass;
 }
