@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - TeleFood</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+
+    <!-- Header & Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 id="pageTitle" class="fw-bold">Order #...</h2>
+        <a href="vendor.html" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <!-- Notification Box -->
+    <div id="messageBox" class="alert d-none" role="alert"></div>
+
+    <div class="row">
+        <!-- Left Column: Customer, Courier & Item Info -->
+        <div class="col-md-8">
+
+            <!-- Customer Details Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Name:</strong> <span id="customerName">Loading...</span></p>
+                    <p class="mb-2"><strong>Address:</strong> <span id="customerAddress">Loading...</span></p>
+                    <p class="mb-0"><strong>Phone:</strong> <span id="customerPhone">Loading...</span></p>
+                </div>
+            </div>
+
+            <!-- Courier Details Card (Hidden by default) -->
+            <div class="card shadow-sm mb-4 d-none" id="courierCard">
+                <div class="card-header bg-info text-dark">
+                    <h5 class="mb-0">Courier Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Name:</strong> <span id="courierName">Loading...</span></p>
+                    <p class="mb-2"><strong>Phone:</strong> <span id="courierPhone">Loading...</span></p>
+                    <p class="mb-0"><strong>TIN:</strong> <span id="courierTin">Loading...</span></p>
+                </div>
+            </div>
+
+            <!-- Order Items List -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Order Items</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Item</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orderItemsTableBody">
+                        <!-- JavaScript will generate rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Order Total & Status Controls -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="fw-bold mb-3">Total: €<span id="orderTotal">0.00</span></h3>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold">Status:</span>
+                        <span id="orderStatus" class="badge bg-secondary" style="width: 85px;">Loading...</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold">Method:</span>
+                        <span id="orderMethod" class="badge bg-dark" style="width: 85px;">Loading...</span>
+                    </div>
+
+                    <hr>
+
+                    <!-- Vendor Action Buttons -->
+                    <h6 class="fw-bold mb-3">Update Status:</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-warning fw-bold" id="btnPrepare" onclick="updateOrderStatus('Preparing')">Mark as Preparing</button>
+                        <button class="btn btn-info fw-bold text-white" id="btnDeliver" onclick="updateOrderStatus('Delivering')">Mark as Delivering</button>
+                        <button class="btn btn-success fw-bold" id="btnComplete" onclick="updateOrderStatus('Completed')">Mark as Completed</button>
+                        <button class="btn btn-outline-danger fw-bold mt-3" id="btnCancel" onclick="cancelOrder()">Cancel Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="order.js"></script>
+</body>
+</html>
