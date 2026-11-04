@@ -143,6 +143,16 @@ public class OrderService {
                 customerNotification
         );
 
+        OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                order.getId(),
+                "Order #" + order.getId() + " has been cancelled by the vendor.",
+                Order.OrderStatus.Completed
+        );
+        messagingTemplate.convertAndSend(
+                "/topic/vendor/" + order.getVendor().getId(),
+                vendorNotification
+        );
+
         if (assignedCourier != null) {
             assignedCourier.setAvailability(true);
             courierRepository.save(assignedCourier);
@@ -179,6 +189,16 @@ public class OrderService {
             );
 
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " delivery method is takeout. No available couriers.",
+                    Order.OrderStatus.Completed
+            );
+            messagingTemplate.convertAndSend(
+                    "/topic/vendor/" + order.getVendor().getId(),
+                    vendorNotification
+            );
         } else {
             Courier nextCourier = nextCouriers.get(0);
             order.setCourier(nextCourier);
@@ -257,6 +277,13 @@ public class OrderService {
 
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
 
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "A courier has accepted Order #" + order.getId() + ".",
+                    order.getStatus()
+            );
+            messagingTemplate.convertAndSend("/topic/vendor/" + order.getVendor().getId(), vendorNotification);
+
         } else {
             throw new IllegalStateException("This order is no longer available or the acceptance timer expired.");
         }
@@ -281,6 +308,13 @@ public class OrderService {
             );
 
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " is getting prepared.",
+                    Order.OrderStatus.Preparing
+            );
+            messagingTemplate.convertAndSend("/topic/vendor/" + order.getVendor().getId(), vendorNotification);
         } else {
             throw new IllegalStateException("You cannot update the status to preparing from " + order.getStatus());
         }
@@ -309,6 +343,13 @@ public class OrderService {
             );
 
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " is getting delivered.",
+                    Order.OrderStatus.Delivering
+            );
+            messagingTemplate.convertAndSend("/topic/vendor/" + order.getVendor().getId(), vendorNotification);
         } else {
             throw new IllegalStateException("You cannot update the status to delivering from " + order.getStatus());
         }
@@ -334,6 +375,13 @@ public class OrderService {
             );
 
             messagingTemplate.convertAndSend("/topic/customer/" + order.getCustomer().getId(), customerNotification);
+
+            OrderVendorStatusNotification vendorNotification = new OrderVendorStatusNotification(
+                    order.getId(),
+                    "Order #" + order.getId() + " is completed.",
+                    Order.OrderStatus.Completed
+            );
+            messagingTemplate.convertAndSend("/topic/vendor/" + order.getVendor().getId(), vendorNotification);
         } else if (order.getMethod() == Order.DeliveryMethod.Courier) {
             throw new IllegalStateException("Only the courier is authorized to complete this order.");
         } else if (order.getMethod() == Order.DeliveryMethod.Pending) {
