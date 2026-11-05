@@ -2,6 +2,7 @@ package com.tele.telefood.controller;
 
 import com.tele.telefood.dto.OrderItemRequest;
 import com.tele.telefood.dto.ReceiveOrderInfo;
+import com.tele.telefood.dto.ReceiveSingleOrderInfo;
 import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,19 @@ public class OrderController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error occurred.");
+        }
+    }
+
+    @GetMapping("/{orderId}/info")
+    public ResponseEntity<?> getSingleOrderInfo(@RequestHeader("UserId") Integer vendorId, @PathVariable("orderId") Integer orderId) {
+        try {
+            ReceiveSingleOrderInfo orderInfo = orderService.getSingleOrderInfo(vendorId, orderId);
+            return ResponseEntity.ok().body(orderInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Server error occurred.");
         }
     }

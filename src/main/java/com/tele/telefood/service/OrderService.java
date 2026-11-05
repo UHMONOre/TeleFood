@@ -2,6 +2,7 @@ package com.tele.telefood.service;
 
 import com.tele.telefood.dto.OrderItemRequest;
 import com.tele.telefood.dto.ReceiveOrderInfo;
+import com.tele.telefood.dto.ReceiveSingleOrderInfo;
 import com.tele.telefood.dto.ReceiveUserInfo;
 import com.tele.telefood.dto.notification.*;
 import com.tele.telefood.entity.*;
@@ -53,6 +54,21 @@ public class OrderService {
         List<Order> failedOrders = orderRepository.findFailedOrders(vendorId);
 
         ReceiveOrderInfo orderInfo = new ReceiveOrderInfo(activeOrders, completedOrders, failedOrders);
+
+        return orderInfo;
+    }
+
+    @Transactional
+    public ReceiveSingleOrderInfo getSingleOrderInfo(Integer vendorId, Integer orderId) {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!vendor.getId().equals(order.getVendor().getId())) {
+            throw new IllegalArgumentException("The vendor in not authorized to view this order");
+        }
+
+        ReceiveSingleOrderInfo orderInfo = new ReceiveSingleOrderInfo(order);
 
         return orderInfo;
     }
