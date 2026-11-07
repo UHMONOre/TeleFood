@@ -12,8 +12,8 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping("/info")
-    public ResponseEntity<?> getCustomerInfo(@RequestHeader("UserId") Integer id){
+    @GetMapping("/{customerId}/info")
+    public ResponseEntity<?> getCustomerInfo(@PathVariable("customerId") Integer id){
         try {
             ReceiveUserInfo customerInfo = customerService.getCustomerInfo(id);
             return ResponseEntity.ok().body(customerInfo);

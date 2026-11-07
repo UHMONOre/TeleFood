@@ -34,12 +34,41 @@ window.onload = async function() {
         return;
     }
 
+    const orderInfoResponse = await fetch("/order/" + orderId + "/info", {
+        method: "GET",
+        headers: {
+            "UserId": vendorId
+        }
+    });
 
+    const orderInfo = await orderInfoResponse.json();
 
-    loadOrderDetails();
+    const customerInfoResponse = await fetch("/customer/" + orderInfo.customerId + "/info", {
+        method: "GET",
+        headers: {
+            "UserId": vendorId
+        }
+    });
+
+    const customerInfo = await customerInfoResponse.json();
+
+    loadOrderDetails(orderInfo);
+    loadCustomerDetails(customerInfo);
 }
 
-async function loadOrderDetails() {
+async function loadOrderDetails(orderInfo) {
+}
+
+async function loadCustomerDetails(customerInfo) {
+    const nameText = document.getElementById("customerName");
+    const addressText = document.getElementById("customerAddress");
+    const emailText = document.getElementById("customerEmail");
+    const phoneText = document.getElementById("customerPhone");
+
+    nameText.innerText = customerInfo.firstName + " " + customerInfo.lastName;
+    addressText.innerText = customerInfo.address;
+    emailText.innerText = customerInfo.email;
+    phoneText.innerText = customerInfo.phoneNumber;
 }
 
 let stompClient = null;

@@ -23,7 +23,12 @@ public class ReceiveSingleOrderInfo {
         this.total = order.getTotal();
         this.customerId = order.getCustomer().getId();
         this.vendorId = order.getVendor().getId();
-        this.courierId = order.getCourier().getId();
+
+        if (order.getCourier() != null) {
+            this.courierId = order.getCourier().getId();
+        } else {
+            this.courierId = null;
+        }
     }
 
     public Integer getOrderId() {
